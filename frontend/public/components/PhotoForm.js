@@ -1,46 +1,29 @@
 import React, { useState } from "react";
+import axios from "axios";
 
-function PhotoForm() {
+const PhotoForm = ({ onSubmit }) => {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
-  const [image, setImage] = useState(null);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      console.log("Form submitted:", { title, description, image });
+      const response = await axios.post("http://localhost:5000/photos", { title, description });
+      onSubmit(response.data);
       setTitle("");
       setDescription("");
-      setImage(null);
-      setError("");
     } catch (error) {
-      setError("Failed to submit form. Please try again.");
-      console.error("Error submitting form:", error);
+      console.error("Error creating photo:", error);
     }
   };
 
   return (
-    <div>
-      <h2>Add Photo</h2>
-      {error && <p style={{ color: "red" }}>{error}</p>}
-      <form onSubmit={handleSubmit}>
-        <div>
-          <label>Title:</label>
-          <input type="text" value={title} onChange={(e) => setTitle(e.target.value)} required />
-        </div>
-        <div>
-          <label>Description:</label>
-          <textarea value={description} onChange={(e) => setDescription(e.target.value)} required />
-        </div>
-        <div>
-          <label>Image:</label>
-          <input type="file" accept="image/*" onChange={(e) => setImage(e.target.files[0])} required />
-        </div>
-        <button type="submit">Add Photo</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <input type="text" placeholder="Title" value={title} onChange={(e) => setTitle(e.target.value)} />
+      <input type="text" placeholder="Description" value={description} onChange={(e) => setDescription(e.target.value)} />
+      <button type="submit">Add Photo</button>
+    </form>
   );
-}
+};
 
 export default PhotoForm;

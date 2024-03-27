@@ -17,6 +17,15 @@ const PhotoList = () => {
     }
   };
 
+  const deletePhoto = async (id) => {
+    try {
+      await axios.delete(`http://localhost:5000/photos/${id}`);
+      setPhotos(photos.filter((photo) => photo._id !== id));
+    } catch (error) {
+      console.error("Error deleting photo:", error);
+    }
+  };
+
   return (
     <div>
       <h2>Photos</h2>
